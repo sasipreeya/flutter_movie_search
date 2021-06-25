@@ -4,23 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:movie_search_app/src/models/movie_model.dart';
 import '../blocs/movies_bloc.dart';
 
-class MovieListScreen extends StatelessWidget {
-  // This widget is the root of your application.
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: MovieListPage(
-        title: 'Movie list',
-        searchTerm: '',
-      ),
-    );
-  }
-}
-
 class MovieListPage extends StatefulWidget {
   MovieListPage({Key? key, required this.title, required this.searchTerm})
       : super(key: key);
