@@ -14,17 +14,21 @@ class MovieListPage extends StatefulWidget {
 
 class _MovieListPageState extends State<MovieListPage> {
   List<dynamic> results = [];
+  late Future<List<dynamic>> fetch;
 
   Future<List<dynamic>> getMovieList(String value) async {
     MovieModel _movieList = await bloc.fetchAllMovies(value);
     setState(() {
-      List<dynamic> temp = [];
-      for (int i = 0; i < _movieList.results.length; i++) {
-        temp.add(_movieList.results[i]);
-      }
-      results.addAll(temp);
+      results.addAll(_movieList.results);
     });
     return _movieList.results;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    fetch = getMovieList(widget.searchTerm);
   }
 
   @override
@@ -34,7 +38,7 @@ class _MovieListPageState extends State<MovieListPage> {
           title: Text(widget.title),
         ),
         body: FutureBuilder<List<dynamic>>(
-          future: getMovieList(widget.searchTerm),
+          future: fetch,
           builder: (context, _movieListSnap) {
             if (_movieListSnap.connectionState == ConnectionState.none &&
                 _movieListSnap.hasData == null) {
