@@ -14,13 +14,36 @@ class MovieListPage extends StatefulWidget {
 }
 
 class _MovieListPageState extends State<MovieListPage> {
+  int page = 1;
   List<dynamic> results = [];
+  int total_pages = 1;
   late Future<List<dynamic>> fetch;
 
-  Future<List<dynamic>> getMovieList(String value) async {
-    MovieModel _movieList = await bloc.fetchAllMovies(value);
+  void previousPage() {
+    if (page != 1 && page <= total_pages) {
+      setState(() {
+        page--;
+      });
+      getMovieList(widget.searchTerm, page);
+    }
+  }
+
+  void nextPage() {
+    print(total_pages);
+    if (page < total_pages) {
+      setState(() {
+        page++;
+      });
+      getMovieList(widget.searchTerm, page);
+    }
+  }
+
+  Future<List<dynamic>> getMovieList(String value, int page) async {
+    MovieModel _movieList = await bloc.fetchAllMovies(value, page);
     setState(() {
+      results.clear();
       results.addAll(_movieList.results);
+      total_pages = _movieList.total_pages;
     });
     return _movieList.results;
   }
@@ -29,7 +52,7 @@ class _MovieListPageState extends State<MovieListPage> {
   void initState() {
     super.initState();
 
-    fetch = getMovieList(widget.searchTerm);
+    fetch = getMovieList(widget.searchTerm, page);
   }
 
   @override
@@ -46,33 +69,53 @@ class _MovieListPageState extends State<MovieListPage> {
               return Container();
             }
             // return Text('count is ${_movieListSnap.toString()}');
-            return ListView.builder(
-              itemCount: results.length,
-              itemBuilder: (context, index) {
-                final item = results[index];
-                return GestureDetector(
-                  onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => MoviePage(movie: item))),
-                  child: Container(
-                    padding: const EdgeInsets.all(4.0),
-                    child: ListTile(
-                      title: Text(item['title'], style: TextStyle(fontWeight: FontWeight.bold)),
-                      subtitle: Column(
-                        children: [
-                          Text(item['release_date']),
-                          Text(item['overview'], maxLines: 4, style: TextStyle(color: Colors.black),)
-                        ],
-                        crossAxisAlignment: CrossAxisAlignment.start
-                      ),
-                      leading: Image.network('https://image.tmdb.org/t/p/w92${item['poster_path']}'),
-                    ),
-                    decoration: BoxDecoration(
-                      border: Border(
-                          bottom: BorderSide(width: 1, color: Colors.blue)
-                      )
-                    ),
+            return Column(
+              children: [
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: results.length,
+                    itemBuilder: (context, index) {
+                      final item = results[index];
+                      return GestureDetector(
+                        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => MoviePage(movie: item))),
+                        child: Container(
+                          padding: const EdgeInsets.all(4.0),
+                          child: ListTile(
+                            title: Text(item['title'], style: TextStyle(fontWeight: FontWeight.bold)),
+                            subtitle: Column(
+                              children: [
+                                Text(item['release_date']),
+                                Text(item['overview'], maxLines: 4, style: TextStyle(color: Colors.black),)
+                              ],
+                              crossAxisAlignment: CrossAxisAlignment.start
+                            ),
+                            leading: Image.network('https://image.tmdb.org/t/p/w92${item['poster_path']}'),
+                          ),
+                          decoration: BoxDecoration(
+                            border: Border(
+                                bottom: BorderSide(width: 1, color: Colors.blue)
+                            )
+                          ),
+                        ),
+                      );
+                    },
                   ),
-                );
-              },
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    TextButton(onPressed: () { previousPage(); }, child: Text('<')),
+                    Text('$page'),
+                    TextButton(
+                      onPressed: () { 
+                        nextPage();
+                        print('next');
+                      }, 
+                      child: Text('>')
+                    ),
+                  ]
+                )
+              ]
             );
           },
         ));
