@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:movie_search_app/src/models/movie_model.dart';
 import '../blocs/movies_bloc.dart';
+import 'movie_screen.dart';
 
 class MovieListPage extends StatefulWidget {
   MovieListPage({Key? key, required this.title, required this.searchTerm})
@@ -49,22 +50,27 @@ class _MovieListPageState extends State<MovieListPage> {
               itemCount: results.length,
               itemBuilder: (context, index) {
                 final item = results[index];
-                return Container(
-                  padding: const EdgeInsets.all(4.0),
-                  child: ListTile(
-                    title: Text(item['title'], style: TextStyle(fontWeight: FontWeight.bold)),
-                    subtitle: Column(
-                      children: [
-                        Text(item['release_date']),
-                        Text(item['overview'], maxLines: 4, style: TextStyle(color: Colors.black),)
-                      ],
-                      crossAxisAlignment: CrossAxisAlignment.start
+                return GestureDetector(
+                  onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => MoviePage(movie: item))),
+                  child: Container(
+                    padding: const EdgeInsets.all(4.0),
+                    child: ListTile(
+                      title: Text(item['title'], style: TextStyle(fontWeight: FontWeight.bold)),
+                      subtitle: Column(
+                        children: [
+                          Text(item['release_date']),
+                          Text(item['overview'], maxLines: 4, style: TextStyle(color: Colors.black),)
+                        ],
+                        crossAxisAlignment: CrossAxisAlignment.start
+                      ),
+                      leading: Image.network('https://image.tmdb.org/t/p/w92${item['poster_path']}'),
                     ),
-                    leading: Image.network('https://image.tmdb.org/t/p/w92${item['poster_path']}'),
+                    decoration: BoxDecoration(
+                      border: Border(
+                          bottom: BorderSide(width: 1, color: Colors.blue)
+                      )
+                    ),
                   ),
-                  decoration: BoxDecoration(
-                    border: Border(
-                        bottom: BorderSide(width: 1, color: Colors.blue))),
                 );
               },
             );
