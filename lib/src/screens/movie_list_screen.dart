@@ -17,6 +17,7 @@ class _MovieListPageState extends State<MovieListPage> {
   int page = 1;
   List<dynamic> results = [];
   int total_pages = 1;
+  bool pageVisible = false;
   late Future<List<dynamic>> fetch;
 
   void previousPage() {
@@ -29,7 +30,6 @@ class _MovieListPageState extends State<MovieListPage> {
   }
 
   void nextPage() {
-    print(total_pages);
     if (page < total_pages) {
       setState(() {
         page++;
@@ -44,6 +44,9 @@ class _MovieListPageState extends State<MovieListPage> {
       results.clear();
       results.addAll(_movieList.results);
       total_pages = _movieList.total_pages;
+      if (_movieList.total_pages > 1) {
+        pageVisible = true;
+      }
     });
     return _movieList.results;
   }
@@ -101,19 +104,16 @@ class _MovieListPageState extends State<MovieListPage> {
                     },
                   ),
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    TextButton(onPressed: () { previousPage(); }, child: Text('<')),
-                    Text('$page'),
-                    TextButton(
-                      onPressed: () { 
-                        nextPage();
-                        print('next');
-                      }, 
-                      child: Text('>')
-                    ),
-                  ]
+                Visibility(
+                  visible: pageVisible,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      TextButton(onPressed: () { previousPage(); }, child: Text('<')),
+                      Text('$page'),
+                      TextButton(onPressed: () { nextPage(); }, child: Text('>')),
+                    ]
+                  )
                 )
               ]
             );
