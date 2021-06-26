@@ -35,6 +35,17 @@ class _SearchPageState extends State<SearchPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
+        actions: [
+          Padding(
+            padding: EdgeInsets.only(right: 20.0),
+            child: GestureDetector(
+              onTap: () => print('favorite tap'),
+              child: Icon(
+                  Icons.favorite
+              ),
+            )
+          ),
+        ]
       ),
       body: Column(
         children: [
