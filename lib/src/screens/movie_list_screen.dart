@@ -50,10 +50,21 @@ class _MovieListPageState extends State<MovieListPage> {
               itemBuilder: (context, index) {
                 final item = results[index];
                 return Container(
-                  child: ListTile(title: Text(item['title'])),
+                  padding: const EdgeInsets.all(4.0),
+                  child: ListTile(
+                    title: Text(item['title'], style: TextStyle(fontWeight: FontWeight.bold)),
+                    subtitle: Column(
+                      children: [
+                        Text(item['release_date']),
+                        Text(item['overview'], maxLines: 4, style: TextStyle(color: Colors.black),)
+                      ],
+                      crossAxisAlignment: CrossAxisAlignment.start
+                    ),
+                    leading: Image.network('https://image.tmdb.org/t/p/w92${item['poster_path']}'),
+                  ),
                   decoration: BoxDecoration(
-                      border: Border(
-                          bottom: BorderSide(width: 1, color: Colors.blue))),
+                    border: Border(
+                        bottom: BorderSide(width: 1, color: Colors.blue))),
                 );
               },
             );
