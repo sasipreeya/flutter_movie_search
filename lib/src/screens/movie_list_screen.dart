@@ -15,10 +15,10 @@ class MovieListPage extends StatefulWidget {
 
 class _MovieListPageState extends State<MovieListPage> {
   int page = 1;
-  List<dynamic> results = [];
+  List<Movie> results = [];
   int total_pages = 1;
   bool pageVisible = false;
-  late Future<List<dynamic>> fetch;
+  late Future<List<Movie>> fetch;
 
   void previousPage() {
     if (page != 1 && page <= total_pages) {
@@ -38,7 +38,7 @@ class _MovieListPageState extends State<MovieListPage> {
     }
   }
 
-  Future<List<dynamic>> getMovieList(String value, int page) async {
+  Future<List<Movie>> getMovieList(String value, int page) async {
     MovieModel _movieList = await bloc.fetchAllMovies(value, page);
     setState(() {
       results.clear();
@@ -64,14 +64,13 @@ class _MovieListPageState extends State<MovieListPage> {
         appBar: AppBar(
           title: Text(widget.title),
         ),
-        body: FutureBuilder<List<dynamic>>(
+        body: FutureBuilder<List<Movie>>(
           future: fetch,
           builder: (context, _movieListSnap) {
             if (_movieListSnap.connectionState == ConnectionState.none &&
                 _movieListSnap.hasData == null) {
               return Container();
             }
-            // return Text('count is ${_movieListSnap.toString()}');
             return Column(
               children: [
                 Expanded(
@@ -84,15 +83,15 @@ class _MovieListPageState extends State<MovieListPage> {
                         child: Container(
                           padding: const EdgeInsets.all(4.0),
                           child: ListTile(
-                            title: Text(item['title'], style: TextStyle(fontWeight: FontWeight.bold)),
+                            title: Text(item.title.toString(), style: TextStyle(fontWeight: FontWeight.bold)),
                             subtitle: Column(
                               children: [
-                                Text(item['release_date']),
-                                Text(item['overview'], maxLines: 4, style: TextStyle(color: Colors.black),)
+                                Text(item.release_date.toString()),
+                                Text(item.overview.toString(), maxLines: 4, style: TextStyle(color: Colors.black),)
                               ],
                               crossAxisAlignment: CrossAxisAlignment.start
                             ),
-                            leading: Image.network('https://image.tmdb.org/t/p/w92${item['poster_path']}'),
+                            leading: Image.network('https://image.tmdb.org/t/p/w92${item.poster_path}'),
                           ),
                           decoration: BoxDecoration(
                             border: Border(

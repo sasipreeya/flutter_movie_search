@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:movie_search_app/src/screens/movie_list_screen.dart';
-import '../blocs/movies_bloc.dart';
 
 class SearchPage extends StatefulWidget {
   SearchPage({Key? key, required this.title}) : super(key: key);
