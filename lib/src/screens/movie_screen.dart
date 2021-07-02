@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:movie_search_app/src/models/movie_model.dart';
+import 'package:movie_search_app/src/databases/favorite_database.dart';
 
 class MoviePage extends StatefulWidget {
   MoviePage({Key? key, required this.movie})
@@ -11,6 +12,30 @@ class MoviePage extends StatefulWidget {
 }
 
 class _MoviePageState extends State<MoviePage> {
+
+  _read(int id, Movie movie) async {
+    DatabaseHelper helper = DatabaseHelper.instance;
+    Favorite item = await helper.queryFavorite(id);
+    return item;
+  }
+
+  _save(Movie item) async {
+    Favorite fav = Favorite();
+    fav.id = item.id;
+    fav.title = item.title;
+    fav.overview = item.overview;
+    fav.voteAverage = item.vote_average.toString();
+    fav.posterPath = item.poster_path;
+    DatabaseHelper helper = DatabaseHelper.instance;
+    int id = await helper.insert(fav);
+    print('inserted row: $id');
+  }
+
+  _delete(int id) async {
+    DatabaseHelper helper = DatabaseHelper.instance;
+    await helper.deleteFavorite(id);
+    print('deleted row: $id');
+  }
 
   @override
   Widget build(BuildContext context) {
