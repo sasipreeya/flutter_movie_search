@@ -42,6 +42,7 @@ class _MoviePageState extends State<MoviePage> {
     fav.overview = item.overview;
     fav.voteAverage = item.vote_average.toString();
     fav.posterPath = item.poster_path;
+    fav.releaseDate = item.release_date;
     DatabaseHelper helper = DatabaseHelper.instance;
     int id = await helper.insert(fav);
     print('inserted row: $id');

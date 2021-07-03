@@ -11,6 +11,7 @@ final String columnTitle = 'title';
 final String columnOverview = 'overview';
 final String columnVoteAverage = 'vote_average';
 final String columnPosterPath = 'poster_path';
+final String columnReleaseDate = 'release_date';
 
 // data model class
 class Favorite {
@@ -20,6 +21,7 @@ class Favorite {
   String overview;
   String voteAverage;
   String posterPath;
+  String releaseDate;
 
   Favorite();
   
@@ -30,6 +32,7 @@ class Favorite {
     overview = map[columnOverview];
     voteAverage = map[columnVoteAverage];
     posterPath = map[columnPosterPath];
+    releaseDate = map[columnReleaseDate];
   }
   
   // convenience method to create a Map from this favorite object
@@ -39,6 +42,7 @@ class Favorite {
       columnOverview: overview,
       columnVoteAverage: voteAverage,
       columnPosterPath: posterPath,
+      columnReleaseDate: releaseDate,
     };
     if (id != null) {
       map[columnId] = id;
@@ -86,7 +90,8 @@ class DatabaseHelper {
           "$columnTitle TEXT,"
           "$columnOverview TEXT,"
           "$columnVoteAverage TEXT,"
-          "$columnPosterPath TEXT"
+          "$columnPosterPath TEXT,"
+          "$columnReleaseDate TEXT"
           ")",
     );
   }
@@ -101,7 +106,7 @@ class DatabaseHelper {
   Future<Favorite> queryFavorite(int id) async {
     Database db = await database;
     List<Map> maps = await db.query(tableFavorite,
-        columns: [columnId, columnTitle, columnOverview, columnVoteAverage],
+        columns: [columnId, columnTitle, columnOverview, columnVoteAverage, columnReleaseDate],
         where: '$columnId = ?',
         whereArgs: [id]);
     if (maps.length > 0) {
@@ -117,5 +122,18 @@ class DatabaseHelper {
       where: '$columnId = ?',
       whereArgs: [id],
     );
+  }
+
+  Future<List<Favorite>> queryAll() async {
+    Database db = await database;
+    List<Favorite> favoriteList = [];
+    List<Map> maps = await db.query(tableFavorite);
+    if (maps.length > 0) {
+      for (int i = 0; i < maps.length; i++) {
+        favoriteList.add(Favorite.fromMap(maps[i]));
+      }
+      return favoriteList;
+    }
+    return null;
   }
 }
