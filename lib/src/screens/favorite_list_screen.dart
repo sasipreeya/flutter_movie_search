@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:movie_search_app/src/databases/favorite_database.dart';
+import 'favorite_screen.dart';
 
 class FavoriteListPage extends StatefulWidget {
   FavoriteListPage({Key? key, required this.title})
@@ -24,7 +25,11 @@ class _FavoriteListPageState extends State<FavoriteListPage> {
     List<Favorite> item = await helper.queryAll();
     setState(() {
       favoriteList.clear();
-      favoriteList = item;
+      if (item != null) {
+        favoriteList = item;
+      } else {
+        favoriteList.clear();
+      }
     });
   }
 
@@ -48,7 +53,8 @@ class _FavoriteListPageState extends State<FavoriteListPage> {
                     itemBuilder: (context, index) {
                       final item = favoriteList[index];
                       return GestureDetector(
-                        // onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => MoviePage(movie: item))),
+                        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => FavoritePage(favorite: item)))
+                          .then((value) => { _queryAll() }),
                         child: Container(
                           padding: const EdgeInsets.all(4.0),
                           child: ListTile(
