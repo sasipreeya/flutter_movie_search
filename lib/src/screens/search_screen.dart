@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:movie_search_app/src/screens/movie_list_screen.dart';
+import 'favorite_list_screen.dart';
 
 class SearchPage extends StatefulWidget {
   SearchPage({Key? key, required this.title}) : super(key: key);
@@ -38,7 +39,7 @@ class _SearchPageState extends State<SearchPage> {
           Padding(
             padding: EdgeInsets.only(right: 20.0),
             child: GestureDetector(
-              onTap: () => print('favorite tap'),
+              onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => FavoriteListPage(title: 'Favorite list'))),
               child: Icon(
                   Icons.favorite
               ),
