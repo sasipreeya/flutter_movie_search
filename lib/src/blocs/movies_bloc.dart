@@ -1,5 +1,4 @@
 import '../resources/api_provider.dart';
-import 'package:rxdart/rxdart.dart';
 import '../models/movie_model.dart';
 
 class MoviesBloc {

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:movie_search_app/src/models/favorite_model.dart';
 import 'package:movie_search_app/src/models/movie_model.dart';
 import 'package:movie_search_app/src/databases/favorite_database.dart';
 

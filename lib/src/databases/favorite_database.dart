@@ -1,55 +1,9 @@
 // @dart=2.9
 import 'dart:io';
+import 'package:movie_search_app/src/models/favorite_model.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path_provider/path_provider.dart';
-
-// database table and column names
-final String tableFavorite = 'favorites';
-final String columnId = '_id';
-final String columnTitle = 'title';
-final String columnOverview = 'overview';
-final String columnVoteAverage = 'vote_average';
-final String columnPosterPath = 'poster_path';
-final String columnReleaseDate = 'release_date';
-
-// data model class
-class Favorite {
-
-  int id;
-  String title;
-  String overview;
-  String voteAverage;
-  String posterPath;
-  String releaseDate;
-
-  Favorite();
-  
-  // convenience constructor to create a favorite object
-  Favorite.fromMap(Map<String, dynamic> map) {
-    id = map[columnId];
-    title = map[columnTitle];
-    overview = map[columnOverview];
-    voteAverage = map[columnVoteAverage];
-    posterPath = map[columnPosterPath];
-    releaseDate = map[columnReleaseDate];
-  }
-  
-  // convenience method to create a Map from this favorite object
-  Map<String, dynamic> toMap() {
-    var map = <String, dynamic>{
-      columnTitle: title,
-      columnOverview: overview,
-      columnVoteAverage: voteAverage,
-      columnPosterPath: posterPath,
-      columnReleaseDate: releaseDate,
-    };
-    if (id != null) {
-      map[columnId] = id;
-    }
-    return map;
-  }
-}
 
 // singleton class to manage the database
 class DatabaseHelper {
