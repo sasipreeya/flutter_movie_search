@@ -12,10 +12,26 @@ class MoviePage extends StatefulWidget {
 }
 
 class _MoviePageState extends State<MoviePage> {
+  late bool isFavorite;
+
+  @override
+  void initState() {
+    super.initState();
+    _read(widget.movie.id, widget.movie);
+  }
 
   _read(int id, Movie movie) async {
     DatabaseHelper helper = DatabaseHelper.instance;
     Favorite item = await helper.queryFavorite(id);
+    if (item == null) {
+      setState(() {
+        isFavorite = false;
+      });
+    } else {
+      setState(() {
+        isFavorite = true;
+      });
+    }
     return item;
   }
 
@@ -29,12 +45,18 @@ class _MoviePageState extends State<MoviePage> {
     DatabaseHelper helper = DatabaseHelper.instance;
     int id = await helper.insert(fav);
     print('inserted row: $id');
+    setState(() {
+      isFavorite = true;
+    });
   }
 
   _delete(int id) async {
     DatabaseHelper helper = DatabaseHelper.instance;
     await helper.deleteFavorite(id);
     print('deleted row: $id');
+    setState(() {
+      isFavorite = false;
+    });
   }
 
   @override
@@ -81,8 +103,14 @@ class _MoviePageState extends State<MoviePage> {
               child:
                 SizedBox(
                   child: ElevatedButton(
-                    onPressed: () {}, 
-                    child: Text('Favorite'), 
+                    onPressed: () {
+                      if (isFavorite == false) {
+                        _save(widget.movie);
+                      } else {
+                        _delete(widget.movie.id);
+                      }
+                    }, 
+                    child: isFavorite == false ? Text('Add to favorite') : Text('Remove from favorite'), 
                     style: ButtonStyle(
                       backgroundColor: MaterialStateProperty.all<Color>(Colors.orange),
                     ),
