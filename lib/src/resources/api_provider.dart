@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'movies_provider.dart';
-import '../models/movie_model.dart';
+import '../models/model.dart';
 
 class ApiProvider {
   final moviesProvider = MoviesProvider();

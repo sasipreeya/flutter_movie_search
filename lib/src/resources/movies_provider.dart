@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
-import '../models/movie_model.dart';
+import '../models/model.dart';
 import 'package:dio/dio.dart';
 
 class MoviesProvider {

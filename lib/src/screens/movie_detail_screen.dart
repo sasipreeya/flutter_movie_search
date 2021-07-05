@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:movie_search_app/src/models/movie_model.dart';
-import 'package:movie_search_app/src/databases/favorite_database.dart';
+import 'package:movie_search_app/src/models/model.dart';
+import 'package:movie_search_app/src/databases/database.dart';
 
-class MoviePage extends StatefulWidget {
-  MoviePage({Key? key, required this.movie})
+class MovieDetailPage extends StatefulWidget {
+  MovieDetailPage({Key? key, required this.movie})
       : super(key: key);
   final Movie movie;
 
   @override
-  _MoviePageState createState() => _MoviePageState();
+  _MovieDetailPageState createState() => _MovieDetailPageState();
 }
 
-class _MoviePageState extends State<MoviePage> {
+class _MovieDetailPageState extends State<MovieDetailPage> {
   late bool isFavorite;
 
   @override

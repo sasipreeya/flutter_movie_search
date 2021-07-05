@@ -1,5 +1,5 @@
 import '../resources/api_provider.dart';
-import '../models/movie_model.dart';
+import '../models/model.dart';
 
 class MoviesBloc {
   final _apiProvider = ApiProvider();

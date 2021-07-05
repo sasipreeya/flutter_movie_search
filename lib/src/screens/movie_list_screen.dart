@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:movie_search_app/src/databases/favorite_database.dart';
-import 'package:movie_search_app/src/models/movie_model.dart';
+import 'package:movie_search_app/src/databases/database.dart';
+import 'package:movie_search_app/src/models/model.dart';
 import '../blocs/movies_bloc.dart';
-import 'movie_screen.dart';
+import 'movie_detail_screen.dart';
 
 class MovieListPage extends StatefulWidget {
   MovieListPage({Key? key, required this.title, required this.searchTerm})
@@ -99,7 +99,7 @@ class _MovieListPageState extends State<MovieListPage> {
                       onTap: () => Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => MoviePage(movie: item))).then((value) => {
+                              builder: (context) => MovieDetailPage(movie: item))).then((value) => {
                                 if (widget.searchTerm == '') {
                                   _queryAll()
                                 }

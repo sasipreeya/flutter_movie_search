@@ -1,6 +1,6 @@
 // @dart=2.9
 import 'dart:io';
-import 'package:movie_search_app/src/models/movie_model.dart';
+import 'package:movie_search_app/src/models/model.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path_provider/path_provider.dart';
