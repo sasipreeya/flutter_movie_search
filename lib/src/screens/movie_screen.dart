@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:movie_search_app/src/models/favorite_model.dart';
 import 'package:movie_search_app/src/models/movie_model.dart';
 import 'package:movie_search_app/src/databases/favorite_database.dart';
 
@@ -23,7 +22,8 @@ class _MoviePageState extends State<MoviePage> {
 
   _read(int id, Movie movie) async {
     DatabaseHelper helper = DatabaseHelper.instance;
-    Favorite item = await helper.queryFavorite(id);
+    Movie item = await helper.queryFavorite(id);
+    // ignore: unnecessary_null_comparison
     if (item == null) {
       setState(() {
         isFavorite = false;
@@ -37,15 +37,23 @@ class _MoviePageState extends State<MoviePage> {
   }
 
   _save(Movie item) async {
-    Favorite fav = Favorite();
+    Movie fav = Movie();
     fav.id = item.id;
     fav.title = item.title;
     fav.overview = item.overview;
-    fav.voteAverage = item.vote_average.toString();
-    fav.posterPath = item.poster_path;
-    fav.releaseDate = item.release_date;
+    fav.vote_average = item.vote_average.toString();
+    fav.poster_path = item.poster_path;
+    fav.release_date = item.release_date;
+    fav.vote_count = item.vote_count;
+    fav.video = item.video.toString();
+    fav.popularity = item.popularity;
+    fav.original_language = item.original_language;
+    fav.original_title = item.original_title;
+    fav.genre_ids = item.genre_ids;
+    fav.backdrop_path = item.backdrop_path;
+    fav.adult = item.adult.toString();
     DatabaseHelper helper = DatabaseHelper.instance;
-    int id = await helper.insert(fav);
+    int id = await helper.insertFavorite(fav);
     print('inserted row: $id');
     setState(() {
       isFavorite = true;

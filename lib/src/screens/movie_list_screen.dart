@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:movie_search_app/src/databases/favorite_database.dart';
 import 'package:movie_search_app/src/models/movie_model.dart';
 import '../blocs/movies_bloc.dart';
 import 'movie_screen.dart';
@@ -15,9 +16,9 @@ class MovieListPage extends StatefulWidget {
 
 class _MovieListPageState extends State<MovieListPage> {
   int page = 1;
-  List<Movie> results = [];
   int total_pages = 1;
   bool pageVisible = false;
+  List<Movie> results = [];
   late Future<List<Movie>> fetch;
 
   void previousPage() {
@@ -39,7 +40,7 @@ class _MovieListPageState extends State<MovieListPage> {
   }
 
   Future<List<Movie>> getMovieList(String value, int page) async {
-    MovieModel _movieList = await bloc.fetchAllMovies(value, page);
+    MovieList _movieList = await bloc.fetchAllMovies(value, page);
     setState(() {
       results.clear();
       results.addAll(_movieList.results);
@@ -51,11 +52,28 @@ class _MovieListPageState extends State<MovieListPage> {
     return _movieList.results;
   }
 
+  Future<List<Movie>>  _queryAll() async {
+    DatabaseHelper helper = DatabaseHelper.instance;
+    List<Movie> item = await helper.queryAll();
+    setState(() {
+      results.clear();
+      if (item != null) {
+        results = item;
+      } else {
+        results.clear();
+      }
+    });
+    return results;
+  }
+
   @override
   void initState() {
     super.initState();
-
-    fetch = getMovieList(widget.searchTerm, page);
+    if (widget.searchTerm != '') {
+      fetch = getMovieList(widget.searchTerm, page);
+    } else {
+      fetch = _queryAll();
+    }
   }
 
   @override
@@ -71,51 +89,64 @@ class _MovieListPageState extends State<MovieListPage> {
                 _movieListSnap.hasData == null) {
               return Container();
             }
-            return Column(
-              children: [
-                Expanded(
-                  child: ListView.builder(
-                    itemCount: results.length,
-                    itemBuilder: (context, index) {
-                      final item = results[index];
-                      return GestureDetector(
-                        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => MoviePage(movie: item))),
-                        child: Container(
-                          padding: const EdgeInsets.all(4.0),
-                          child: ListTile(
-                            title: Text(item.title.toString(), style: TextStyle(fontWeight: FontWeight.bold)),
-                            subtitle: Column(
-                              children: [
-                                Text(item.release_date.toString()),
-                                Text(item.overview.toString(), maxLines: 4, style: TextStyle(color: Colors.black),)
-                              ],
-                              crossAxisAlignment: CrossAxisAlignment.start
-                            ),
-                            leading: Image.network('https://image.tmdb.org/t/p/w92${item.poster_path}'),
-                          ),
-                          decoration: BoxDecoration(
-                            border: Border(
-                                bottom: BorderSide(width: 1, color: Colors.blue)
+            return Column(children: [
+              Expanded(
+                child: ListView.builder(
+                  itemCount: results.length,
+                  itemBuilder: (context, index) {
+                    final item = results[index];
+                    return GestureDetector(
+                      onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => MoviePage(movie: item))).then((value) => {
+                                if (widget.searchTerm == '') {
+                                  _queryAll()
+                                }
+                              }),
+                      child: Container(
+                        padding: const EdgeInsets.all(4.0),
+                        child: ListTile(
+                          title: Text(item.title.toString(),
+                              style: TextStyle(fontWeight: FontWeight.bold)),
+                          subtitle: Column(children: [
+                            Text(item.release_date.toString()),
+                            Text(
+                              item.overview.toString(),
+                              maxLines: 4,
+                              style: TextStyle(color: Colors.black),
                             )
-                          ),
+                          ], crossAxisAlignment: CrossAxisAlignment.start),
+                          leading: Image.network(
+                              'https://image.tmdb.org/t/p/w92${item.poster_path}'),
                         ),
-                      );
-                    },
-                  ),
+                        decoration: BoxDecoration(
+                            border: Border(
+                                bottom:
+                                    BorderSide(width: 1, color: Colors.blue))),
+                      ),
+                    );
+                  },
                 ),
-                Visibility(
+              ),
+              Visibility(
                   visible: pageVisible,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      TextButton(onPressed: () { previousPage(); }, child: Text('<')),
+                      TextButton(
+                          onPressed: () {
+                            previousPage();
+                          },
+                          child: Text('<')),
                       Text('$page'),
-                      TextButton(onPressed: () { nextPage(); }, child: Text('>')),
-                    ]
-                  )
-                )
-              ]
-            );
+                      TextButton(
+                          onPressed: () {
+                            nextPage();
+                          },
+                          child: Text('>')),
+                    ]))
+            ]);
           },
         ));
   }

@@ -1,6 +1,6 @@
 // @dart=2.9
 import 'dart:io';
-import 'package:movie_search_app/src/models/favorite_model.dart';
+import 'package:movie_search_app/src/models/movie_model.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path_provider/path_provider.dart';
@@ -45,26 +45,48 @@ class DatabaseHelper {
           "$columnOverview TEXT,"
           "$columnVoteAverage TEXT,"
           "$columnPosterPath TEXT,"
-          "$columnReleaseDate TEXT"
+          "$columnReleaseDate TEXT,"
+          "$columnVoteCount INTEGER,"
+          "$columnVideo TEXT,"
+          "$columnPopularity TEXT,"
+          "$columnOriginalLanguage TEXT,"
+          "$columnOriginalTitle TEXT,"
+          "$columnGenreIds TEXT,"
+          "$columnBackdropPath TEXT,"
+          "$columnAdult TEXT"
           ")",
     );
   }
   
   // Database helper methods:
-  Future<int> insert(Favorite item) async {
+  Future<int> insertFavorite(Movie item) async {
     Database db = await database;
     int id = await db.insert(tableFavorite, item.toMap());
     return id;
   }
   
-  Future<Favorite> queryFavorite(int id) async {
+  Future<Movie> queryFavorite(int id) async {
     Database db = await database;
     List<Map> maps = await db.query(tableFavorite,
-        columns: [columnId, columnTitle, columnOverview, columnVoteAverage, columnReleaseDate],
+        columns: [
+          columnId, 
+          columnTitle, 
+          columnOverview, 
+          columnVoteAverage, 
+          columnReleaseDate,
+          columnVoteCount,
+          columnVideo,
+          columnPopularity,
+          columnOriginalLanguage,
+          columnOriginalTitle,
+          columnGenreIds,
+          columnBackdropPath,
+          columnAdult,
+        ],
         where: '$columnId = ?',
         whereArgs: [id]);
     if (maps.length > 0) {
-      return Favorite.fromMap(maps.first);
+      return Movie.fromMap(maps.first);
     }
     return null;
   }
@@ -78,13 +100,13 @@ class DatabaseHelper {
     );
   }
 
-  Future<List<Favorite>> queryAll() async {
+  Future<List<Movie>> queryAll() async {
     Database db = await database;
-    List<Favorite> favoriteList = [];
+    List<Movie> favoriteList = [];
     List<Map> maps = await db.query(tableFavorite);
     if (maps.length > 0) {
       for (int i = 0; i < maps.length; i++) {
-        favoriteList.add(Favorite.fromMap(maps[i]));
+        favoriteList.add(Movie.fromMap(maps[i]));
       }
       return favoriteList;
     }

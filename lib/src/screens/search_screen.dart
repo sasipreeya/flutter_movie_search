@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:movie_search_app/src/screens/movie_list_screen.dart';
-import 'favorite_list_screen.dart';
 
 class SearchPage extends StatefulWidget {
   SearchPage({Key? key, required this.title}) : super(key: key);
@@ -15,19 +14,21 @@ class _SearchPageState extends State<SearchPage> {
   List<String> _history = [];
 
   void _search(String value) {
-    if (_history.contains(value)) {
-      var index = _history.indexOf(value);
-      setState(() => {
-        _history.removeAt(index),
-        _history.insert(0, value)
-      });
-    } else {
-      setState(() {
-        _history.insert(0, value);
-      });
+    if (value != '') {
+      if (_history.contains(value)) {
+        var index = _history.indexOf(value);
+        setState(() => {
+          _history.removeAt(index),
+          _history.insert(0, value)
+        });
+      } else {
+        setState(() {
+          _history.insert(0, value);
+        });
+      }
+      searchTextField.clear();
+      Navigator.push(context, MaterialPageRoute(builder: (context) => MovieListPage(title: 'Movie list', searchTerm: value)));
     }
-    searchTextField.clear();
-    Navigator.push(context, MaterialPageRoute(builder: (context) => MovieListPage(title: 'Movie list', searchTerm: value)));
   }
 
   @override
@@ -39,7 +40,7 @@ class _SearchPageState extends State<SearchPage> {
           Padding(
             padding: EdgeInsets.only(right: 20.0),
             child: GestureDetector(
-              onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => FavoriteListPage(title: 'Favorite list'))),
+              onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => MovieListPage(title: 'Favorite list', searchTerm: ''))),
               child: Icon(
                   Icons.favorite
               ),
